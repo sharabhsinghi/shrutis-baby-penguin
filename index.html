@@ -494,7 +494,6 @@ body.opened .card{animation:unfold 1.2s cubic-bezier(.3,.7,.2,1) both}
 
     <div class="band">
       <div class="k">The countdown is on</div>
-      <div class="s">until we meet our little penguin</div>
       <div class="cd" data-cd aria-label="Countdown"></div>
       <a class="cal" data-link="cal" data-ev="shower" target="_blank" rel="noopener">Add to calendar</a>
       <p class="from">With love,<strong>Shruti &amp; Sharabh</strong></p>
@@ -716,7 +715,7 @@ var CONFIG = {
     vis.forEach(function(b,i){b.style.gridColumn=(i===0||(i===vis.length-1&&(vis.length-1)%2===1))?'1/-1':''});});
 
   /* ---------- countdown ---------- */
-  var target=new Date(CONFIG.date+'T00:00:00');
+  var target=new Date(CONFIG.date+'T11:00:00-05:00');
   function tick(){var ms=Math.max(0,target-new Date()),d=Math.floor(ms/864e5),hh=Math.floor(ms/36e5)%24,m=Math.floor(ms/6e4)%60,s=Math.floor(ms/1e3)%60;
     var html=[[d,'Days'],[hh,'Hours'],[m,'Mins'],[s,'Secs']].map(function(x){return '<div><b>'+String(x[0]).padStart(2,'0')+'</b><span>'+x[1]+'</span></div>'}).join('');
     $$('[data-cd]').forEach(function(el){el.innerHTML=html})}
