@@ -276,6 +276,16 @@ dialog.t2 .done .big{font-family:var(--f-script);font-size:40px;color:var(--maro
 .sw,.tw,.tl,.bow,.wheel,.gift,.lid,.hood{-webkit-transform-box:fill-box;transform-box:fill-box}
 .sprig{transform-box:view-box}
 .pgbody,.pgwalk,.hb,.inv,.pol,.rsvpbtn,.signlink svg,[data-cluster]>svg{will-change:transform}
+
+/* background music */
+.music{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:150;width:52px;height:52px;border-radius:50%;border:0;display:grid;place-items:center;background:#3a5c9b;color:#fff;box-shadow:0 8px 18px -8px #1f3a6e;cursor:pointer}
+.music svg{width:24px;height:24px}
+.music .eq{display:flex;gap:3px;align-items:flex-end;height:18px}
+.music .eq i{width:3px;background:#fff;border-radius:2px;height:6px;animation:eq 1s ease-in-out infinite alternate}
+.music .eq i:nth-child(2){animation-delay:-.4s}.music .eq i:nth-child(3){animation-delay:-.7s}
+@keyframes eq{to{height:18px}}
+.music .off{display:none}.music.paused .eq{display:none}.music.paused .off{display:block}
+#ytbox{position:fixed;left:0;bottom:0;width:2px;height:2px;opacity:0;pointer-events:none;overflow:hidden}
 /* frame flowers */
 .tw{transform-box:fill-box;transform-origin:center;animation:twinkle 3.6s ease-in-out infinite alternate}
 @keyframes twinkle{from{transform:scale(.82) rotate(-12deg);opacity:.75}to{transform:scale(1.12) rotate(12deg);opacity:1}}
@@ -648,6 +658,34 @@ body.opened .card{animation:unfold 1.2s cubic-bezier(.3,.7,.2,1) both}
     setTimeout(watch,reduce?0:1000);
   }
   btn.addEventListener('click',open);
+})();
+</script>
+<button class="music" id="musicBtn" hidden aria-label="Pause music"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><svg class="off" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3v10.6A4 4 0 1 0 14 17V7h4V3z"/></svg></button>
+<div id="ytbox" aria-hidden="true"><div id="ytplayer"></div></div>
+<script>
+(function(){
+  var VID='JwJJXgWgn40',player=null,ready=false,wantPlay=false,playing=false;
+  var btn=document.getElementById('musicBtn'),env=document.getElementById('openEnv');
+  function setUI(){btn.classList.toggle('paused',!playing);btn.setAttribute('aria-label',playing?'Pause music':'Play music')}
+  window.onYouTubeIframeAPIReady=function(){
+    player=new YT.Player('ytplayer',{width:200,height:113,videoId:VID,
+      playerVars:{autoplay:0,controls:0,loop:1,playlist:VID,playsinline:1,rel:0,modestbranding:1},
+      events:{
+        onReady:function(){ready=true;try{player.setVolume(60)}catch(e){}if(wantPlay)player.playVideo()},
+        onStateChange:function(e){playing=(e.data===1);if(e.data===1||e.data===2)btn.hidden=false;setUI()}
+      }});
+  };
+  var s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';s.async=true;
+  s.onerror=function(){};document.head.appendChild(s);
+  env.addEventListener('click',function(){
+    wantPlay=true;
+    if(ready){player.playVideo()}
+    setTimeout(function(){if(ready)btn.hidden=false;setUI()},800);
+  });
+  btn.addEventListener('click',function(){
+    if(!ready)return;
+    if(playing){player.pauseVideo()}else{player.playVideo()}
+  });
 })();
 </script>
 <!-- host-only panel -->
