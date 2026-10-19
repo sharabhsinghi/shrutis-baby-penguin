@@ -76,7 +76,7 @@ body.opened .pol{animation:polIn 1.2s cubic-bezier(.2,.8,.2,1) both}
 .pol.a{left:0;transform:rotate(-9deg);animation-delay:.25s}
 .pol.b{left:32%;top:-6%;transform:rotate(1deg);z-index:2;animation-delay:.4s}
 .pol.c{right:0;transform:rotate(8deg);animation-delay:.55s}
-@keyframes polIn{from{translate:0 40%;opacity:0}}
+@keyframes polIn{from{opacity:0;margin-top:30%}}
 .flo{position:absolute;pointer-events:none;z-index:6}
 .flo.tr{right:-14%;top:52%;width:38%}
 .flo.ml{left:-4%;width:44%;z-index:1}
@@ -240,6 +240,7 @@ dialog.t2 .done .big{font-family:var(--f-script);font-size:40px;color:var(--maro
 @keyframes breathe{from{transform:scale(.97) rotate(-2deg)}to{transform:scale(1.03) rotate(2deg)}}
 .sprig{animation:sprig 3.8s ease-in-out infinite alternate}
 @keyframes sprig{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
+[data-cluster]>svg,.scene>svg{-webkit-filter:drop-shadow(0 1px 1.5px rgba(47,79,138,.22));filter:drop-shadow(0 1px 1.5px rgba(47,79,138,.22))}
 [data-cluster]>svg{transform-origin:50% 80%;animation:clus 6s ease-in-out infinite alternate}
 @keyframes clus{from{transform:rotate(-1.2deg)}to{transform:rotate(1.2deg)}}
 .pram{transform-box:view-box;transform-origin:100px 236px;animation:rock 2.4s ease-in-out infinite alternate}
@@ -270,6 +271,11 @@ dialog.t2 .done .big{font-family:var(--f-script);font-size:40px;color:var(--maro
 .hb3{right:-20%;top:42%;width:14%;animation-duration:6.8s;animation-delay:-1s}
 .hb4{right:-16%;top:78%;width:10%;animation-duration:8s;animation-delay:-3s}
 @keyframes hbfloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-14px) rotate(3deg)}}
+
+/* Safari: make SVG transform origins explicit and promote animated layers */
+.sw,.tw,.tl,.bow,.wheel,.gift,.lid,.hood{-webkit-transform-box:fill-box;transform-box:fill-box}
+.sprig{transform-box:view-box}
+.pgbody,.pgwalk,.hb,.inv,.pol,.rsvpbtn,.signlink svg,[data-cluster]>svg{will-change:transform}
 /* frame flowers */
 .tw{transform-box:fill-box;transform-origin:center;animation:twinkle 3.6s ease-in-out infinite alternate}
 @keyframes twinkle{from{transform:scale(.82) rotate(-12deg);opacity:.75}to{transform:scale(1.12) rotate(12deg);opacity:1}}
@@ -281,7 +287,7 @@ dialog.t2 .done .big{font-family:var(--f-script);font-size:40px;color:var(--maro
 body:not(.opened){overflow:hidden}
 body:not(.opened) .page,body:not(.opened) .host{visibility:hidden}
 body.opened .card{animation:unfold 1.2s cubic-bezier(.3,.7,.2,1) both}
-@keyframes unfold{from{clip-path:inset(0 0 100% 0 round 24px);transform:translateY(-20px)}to{clip-path:inset(0 0 0 0 round 24px);transform:none}}
+@keyframes unfold{from{-webkit-clip-path:inset(0 0 100% 0 round 24px);clip-path:inset(0 0 100% 0 round 24px);-webkit-transform:translateY(-20px);transform:translateY(-20px)}to{-webkit-clip-path:inset(0 0 0 0 round 24px);clip-path:inset(0 0 0 0 round 24px);-webkit-transform:none;transform:none}}
 .intro{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:16px;background:radial-gradient(ellipse at 50% 40%,#ffffff 0%,#eef3fa 60%,#dfe8f6 100%);transition:opacity .45s ease,visibility 0s .45s}
 .intro.gone{opacity:0;visibility:hidden}
 .intro .wrap{display:grid;justify-items:center;gap:22px;text-align:center}
@@ -305,7 +311,7 @@ body.opened .card{animation:unfold 1.2s cubic-bezier(.3,.7,.2,1) both}
 .intro.open .cta,.intro.open+* .tap,.intro.open .tap{opacity:0}
 .intro.open .flp{transform:rotateX(180deg);z-index:1}
 .intro.open .ppr{transform:translateY(-55%)}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce){body.opened .card{animation-duration:.6s}.ie{animation:none}}
 </style>
 </head>
 <body>
@@ -522,7 +528,7 @@ body.opened .card{animation:unfold 1.2s cubic-bezier(.3,.7,.2,1) both}
   function petal(cx,cy,len,wid,ang,fill,stroke){
     var p='M0 0 C'+n(wid)+' '+n(-len*.25)+' '+n(wid*.9)+' '+n(-len*.85)+' 0 '+n(-len)+' C'+n(-wid*.9)+' '+n(-len*.85)+' '+n(-wid)+' '+n(-len*.25)+' 0 0Z';
     return '<path d="'+p+'" transform="translate('+n(cx)+' '+n(cy)+') rotate('+n(ang)+')" fill="'+fill+'"'+(stroke?' stroke="'+stroke+'" stroke-width=".6"':'')+'/>'}
-  function rRose(x,y,r,R){var s='<g class="sw" style="animation-delay:-'+n(R()*5)+'s"><g filter="url(#rSh)">',i,o=R()*60;
+  function rRose(x,y,r,R){var s='<g class="sw" style="animation-delay:-'+n(R()*5)+'s"><g data-sh="1">',i,o=R()*60;
     for(i=0;i<7;i++){var a=o+i*51.4;s+='<ellipse cx="'+n(x+Math.cos(a*Math.PI/180)*r*.42)+'" cy="'+n(y+Math.sin(a*Math.PI/180)*r*.42)+'" rx="'+n(r*.62)+'" ry="'+n(r*.5)+'" transform="rotate('+n(a)+' '+n(x+Math.cos(a*Math.PI/180)*r*.42)+' '+n(y+Math.sin(a*Math.PI/180)*r*.42)+')" fill="url(#rRose)" stroke="#d9c9ab" stroke-width=".5"/>'}
     for(i=0;i<5;i++){var b=o+30+i*72;s+='<ellipse cx="'+n(x+Math.cos(b*Math.PI/180)*r*.2)+'" cy="'+n(y+Math.sin(b*Math.PI/180)*r*.2)+'" rx="'+n(r*.42)+'" ry="'+n(r*.32)+'" transform="rotate('+n(b)+' '+n(x+Math.cos(b*Math.PI/180)*r*.2)+' '+n(y+Math.sin(b*Math.PI/180)*r*.2)+')" fill="url(#rRose)" stroke="#dccdb0" stroke-width=".5"/>'}
     s+='<circle cx="'+n(x)+'" cy="'+n(y)+'" r="'+n(r*.26)+'" fill="url(#rRoseIn)"/>';
@@ -535,7 +541,7 @@ body.opened .card{animation:unfold 1.2s cubic-bezier(.3,.7,.2,1) both}
     return s+'</g>'}
   function rFloret(x,y,r,light,R){var s='',o=R()*90;for(var i=0;i<4;i++)s+=petal(x,y,r,r*.62,o+i*90,'url(#'+(light?'rHydL':'rHyd')+')','#9fb3d8');
     return s+'<circle cx="'+n(x)+'" cy="'+n(y)+'" r="'+n(r*.14)+'" fill="#6f8fc8"/>'}
-  function rHyd(x,y,r,R){var s='<g class="sw h" style="animation-delay:-'+n(R()*6)+'s"><g filter="url(#rSh)">';for(var i=0;i<16;i++){var a=R()*6.28,d=Math.sqrt(R())*r;s+=rFloret(x+Math.cos(a)*d,y+Math.sin(a)*d,r*.26,R()<.5,R)}return s+'</g></g>'}
+  function rHyd(x,y,r,R){var s='<g class="sw h" style="animation-delay:-'+n(R()*6)+'s"><g data-sh="1">';for(var i=0;i<16;i++){var a=R()*6.28,d=Math.sqrt(R())*r;s+=rFloret(x+Math.cos(a)*d,y+Math.sin(a)*d,r*.26,R()<.5,R)}return s+'</g></g>'}
   function rLeaf(x,y,l,ang,R,euc){
     if(euc){return '<g><circle cx="'+n(x)+'" cy="'+n(y)+'" r="'+n(l*.45)+'" fill="url(#rEuc)" stroke="#7e9688" stroke-width=".5"/></g>'}
     var w=l*.38,p='M0 0 C'+n(w)+' '+n(-l*.3)+' '+n(w*.8)+' '+n(-l*.8)+' 0 '+n(-l)+' C'+n(-w*.8)+' '+n(-l*.8)+' '+n(-w)+' '+n(-l*.3)+' 0 0Z';
@@ -637,7 +643,7 @@ body.opened .card{animation:unfold 1.2s cubic-bezier(.3,.7,.2,1) both}
   }
   function open(){
     if(done)return;done=true;
-    var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var reduce=false;
     intro.classList.add('open');
     setTimeout(function(){document.body.classList.add('opened');window.scrollTo(0,0);intro.classList.add('gone')},reduce?0:380);
     setTimeout(watch,reduce?0:1000);
