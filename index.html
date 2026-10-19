@@ -235,12 +235,12 @@ dialog.t2 .done .big{font-family:var(--f-script);font-size:40px;color:var(--maro
 
 /* motion */
 .sw{transform-box:fill-box;transform-origin:50% 60%;animation:sway3 4.5s ease-in-out infinite alternate}
-.sw.f{animation-duration:3.2s}.sw.h{animation-duration:5.5s;animation-name:breathe}
+.sw.f{animation:none}
+.hood .sw.f{animation:sway3 3.2s ease-in-out infinite alternate}.sw.h{animation-duration:5.5s;animation-name:breathe}
 @keyframes sway3{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
 @keyframes breathe{from{transform:scale(.97) rotate(-2deg)}to{transform:scale(1.03) rotate(2deg)}}
 .sprig{animation:sprig 3.8s ease-in-out infinite alternate}
 @keyframes sprig{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
-[data-cluster]>svg,.scene>svg{-webkit-filter:drop-shadow(0 1px 1.5px rgba(47,79,138,.22));filter:drop-shadow(0 1px 1.5px rgba(47,79,138,.22))}
 [data-cluster]>svg{transform-origin:50% 80%;animation:clus 6s ease-in-out infinite alternate}
 @keyframes clus{from{transform:rotate(-1.2deg)}to{transform:rotate(1.2deg)}}
 .pram{transform-box:view-box;transform-origin:100px 236px;animation:rock 2.4s ease-in-out infinite alternate}
@@ -275,7 +275,7 @@ dialog.t2 .done .big{font-family:var(--f-script);font-size:40px;color:var(--maro
 /* Safari: make SVG transform origins explicit and promote animated layers */
 .sw,.tw,.tl,.bow,.wheel,.gift,.lid,.hood{-webkit-transform-box:fill-box;transform-box:fill-box}
 .sprig{transform-box:view-box}
-.pgbody,.pgwalk,.hb,.inv,.pol,.rsvpbtn,.signlink svg,[data-cluster]>svg{will-change:transform}
+.pgbody,.hb{will-change:transform}
 
 /* background music */
 .music{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:150;width:52px;height:52px;border-radius:50%;border:0;display:grid;place-items:center;background:#3a5c9b;color:#fff;box-shadow:0 8px 18px -8px #1f3a6e;cursor:pointer}
@@ -286,6 +286,8 @@ dialog.t2 .done .big{font-family:var(--f-script);font-size:40px;color:var(--maro
 @keyframes eq{to{height:18px}}
 .music .off{display:none}.music.paused .eq{display:none}.music.paused .off{display:block}
 #ytbox{position:fixed;left:0;bottom:0;width:2px;height:2px;opacity:0;pointer-events:none;overflow:hidden}
+
+.offscreen *,.offscreen *::before,.offscreen *::after{animation-play-state:paused!important}
 /* frame flowers */
 .tw{transform-box:fill-box;transform-origin:center;animation:twinkle 3.6s ease-in-out infinite alternate}
 @keyframes twinkle{from{transform:scale(.82) rotate(-12deg);opacity:.75}to{transform:scale(1.12) rotate(12deg);opacity:1}}
@@ -669,23 +671,30 @@ body.opened .card{animation:unfold 1.2s cubic-bezier(.3,.7,.2,1) both}
   function setUI(){btn.classList.toggle('paused',!playing);btn.setAttribute('aria-label',playing?'Pause music':'Play music')}
   window.onYouTubeIframeAPIReady=function(){
     player=new YT.Player('ytplayer',{width:200,height:113,videoId:VID,
-      playerVars:{autoplay:0,controls:0,loop:1,playlist:VID,playsinline:1,rel:0,modestbranding:1},
+      playerVars:{autoplay:1,controls:0,loop:1,playlist:VID,playsinline:1,rel:0,modestbranding:1},
       events:{
-        onReady:function(){ready=true;try{player.setVolume(60)}catch(e){}if(wantPlay)player.playVideo()},
+        onReady:function(){ready=true;btn.hidden=false;setUI();try{player.setVolume(60)}catch(e){}if(wantPlay)player.playVideo()},
         onStateChange:function(e){playing=(e.data===1);if(e.data===1||e.data===2)btn.hidden=false;setUI()}
       }});
   };
-  var s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';s.async=true;
-  s.onerror=function(){};document.head.appendChild(s);
+  var loaded=false;function loadYT(){if(loaded)return;loaded=true;var s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';s.async=true;document.head.appendChild(s)}
   env.addEventListener('click',function(){
-    wantPlay=true;
+    wantPlay=true;loadYT();
     if(ready){player.playVideo()}
-    setTimeout(function(){if(ready)btn.hidden=false;setUI()},800);
+    setTimeout(function(){if(ready){btn.hidden=false;setUI()}},2500);
   });
   btn.addEventListener('click',function(){
     if(!ready)return;
     if(playing){player.pauseVideo()}else{player.playVideo()}
   });
+})();
+</script>
+<script>
+(function(){
+  if(!('IntersectionObserver' in window))return;
+  var secs=document.querySelectorAll('.stage,.notes,.celeb,.band');
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){e.target.classList.toggle('offscreen',!e.isIntersecting)})},{rootMargin:'100px 0px'});
+  secs.forEach(function(s){io.observe(s)});
 })();
 </script>
 <!-- host-only panel -->
